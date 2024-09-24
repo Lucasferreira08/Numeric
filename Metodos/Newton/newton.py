@@ -1,25 +1,23 @@
 from tkinter import ttk
 import tkinter as tk
-
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from View.Plotagem.telaPlotagem import telaPlotagem
 
-
-class fp(tk.Frame):
-    def __init__(self, parent, inicio, fim, erro, funcao, num_iteracoes):
+class newton(tk.Frame):
+    def __init__(self, parent, inicio, fim, erro, funcao, deriv, num_iteracoes):
         super().__init__(parent)
-        from View.Menu.index import index
+        from Menu.index import index
         self.controller = parent
         self.inicio = inicio
         self.fim = fim
         self.erro = erro
         self.funcao = funcao
+        self.deriv = deriv
         self.numIteracoes = num_iteracoes
         self.iteracoes = []
-        self.bissectionFunction()
+        self.newtonFunction()
 
         # Configurar o grid para tornar a tela responsiva
         self.grid_rowconfigure(0, weight=1)
@@ -31,7 +29,7 @@ class fp(tk.Frame):
         #self.grid_propagate(False)
 
         # Criar um título para a tela
-        title = tk.Label(self, text="Iterações do Método da Bissecção", font=("Arial", 16))
+        title = tk.Label(self, text="Iterações do Método Raphson-Newton", font=("Arial", 16))
         title.grid(row=0, column=0, pady=10, sticky="n")
 
         self.plot_function(funcao, inicio, fim)
@@ -76,11 +74,7 @@ class fp(tk.Frame):
         # Adicionar botões
         btn_voltar = tk.Button(self, text="Voltar ao Menu",
                                command=lambda: self.controller.switch_frame(index(self.controller)))
-        btn_voltar.grid(row=3, column=0, sticky="sw", padx=10, pady=10)
-
-        btn_plotar = tk.Button(self, text="Plotar Função", command=lambda: self.controller.switch_frame(
-            lambda: telaPlotagem(self.controller, funcao, inicio, fim)))
-        btn_plotar.grid(row=3, column=0, sticky="se", padx=10, pady=10)
+        btn_voltar.grid(row=3, column=0, sticky="s", padx=10, pady=10)
 
     def plot_function(self, func_lambda, inicio, fim):
         x_vals = np.linspace(inicio, fim, 400)
@@ -103,27 +97,20 @@ class fp(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().grid(row=1, column=0, padx=10, pady=10)
 
-    def meio(self, a, b):
+    def newtonFunction(self):
+        xn = self.inicio
+        for n in range(self.numIteracoes):
+            fxn = self.funcao(xn)
+            dfxn = self.deriv(xn)
 
-        m = (self.funcao(b)*a - self.funcao(a)*b)/(self.funcao(b) - self.funcao(a))
+            self.iteracoes.append((xn, fxn, dfxn, 0, self.erro))
 
-        return m
-
-    def bissectionFunction(self):
-        #if self.funcao(self.inicio) * self.funcao(self.fim) >= 0:
-            #return
-
-        i=0
-        while True:
-            m = fp.meio(self, self.inicio, self.fim)
-            i+=1
-
-            self.iteracoes.append((self.inicio, self.fim, m, self.funcao(m), self.erro))
-
-            if abs(self.funcao(m)) <= self.erro or i>=self.numIteracoes:
-                break
-
-            if self.funcao(self.inicio) * self.funcao(m) < 0:
-                self.fim = m
-            else:
-                self.inicio = m
+            if abs(fxn) < self.erro:
+                print(f'Aproximação da raiz encontrada: {xn}')
+                return xn
+            if dfxn == 0:
+                print("Derivada zero. Não foi possível continuar.")
+                return None
+            xn = xn - fxn / dfxn
+        print("Máximo de iterações atingido. Raiz não encontrada.")
+        return None

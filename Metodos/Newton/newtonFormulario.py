@@ -1,14 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 import sympy as sp
-from View.Bissection.bissection import bissection
+from Metodos.Newton.newton import newton
 
-class formulario(tk.Frame):
+
+class newtonFormulario(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.controller = parent
 
-        # Configuração do layout para tornar o formulário responsivo
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
@@ -20,11 +20,9 @@ class formulario(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        # Título
         label_title = ttk.Label(self, text="Parâmetros para Usar o Método", font=("Arial", 14))
         label_title.grid(row=0, column=0, columnspan=2, pady=10)
 
-        # Campo para a função
         label_func = ttk.Label(self, text="Função f(x):")
         label_func.grid(row=1, column=0, sticky="e", padx=10, pady=5)
         self.func_entry = ttk.Entry(self)
@@ -36,31 +34,26 @@ class formulario(tk.Frame):
         self.deriv_entry = ttk.Entry(self)
         self.deriv_entry.grid(row=2, column=1, sticky="ew", padx=20, pady=5)
 
-        # Campo para o início do intervalo
         label_inicio = ttk.Label(self, text="Início do intervalo:")
         label_inicio.grid(row=3, column=0, sticky="e", padx=10, pady=5)
         self.inicio_entry = ttk.Entry(self)
         self.inicio_entry.grid(row=3, column=1, sticky="ew", padx=20, pady=5)
 
-        # Campo para o fim do intervalo
         label_fim = ttk.Label(self, text="Fim do intervalo:")
         label_fim.grid(row=4, column=0, sticky="e", padx=10, pady=5)
         self.fim_entry = ttk.Entry(self)
         self.fim_entry.grid(row=4, column=1, sticky="ew", padx=20, pady=5)
 
-        # Campo para a tolerância
         label_tol = ttk.Label(self, text="Tolerância:")
         label_tol.grid(row=5, column=0, sticky="e", padx=10, pady=5)
         self.tol_entry = ttk.Entry(self)
         self.tol_entry.grid(row=5, column=1, sticky="ew", padx=20, pady=5)
 
-        # Campo para o número máximo de iterações
         label_max_iter = ttk.Label(self, text="Número máximo de iterações:")
         label_max_iter.grid(row=6, column=0, sticky="e", padx=10, pady=5)
         self.max_iter_entry = ttk.Entry(self)
         self.max_iter_entry.grid(row=6, column=1, sticky="ew", padx=20, pady=5)
 
-        # Botão de envio
         submit_btn = ttk.Button(self, text="Enviar", command=self.submit)
         submit_btn.grid(row=7, column=0, columnspan=2, pady=20)
 
@@ -76,11 +69,7 @@ class formulario(tk.Frame):
         func_expr = sp.sympify(func)
         func_lambda = sp.lambdify(x, func_expr, "numpy")
 
-        self.controller.switch_frame(bissection(self.controller, inicio, fim, tol, func_lambda))
+        deriv_expr = sp.sympify(deriv)
+        deriv_lambda = sp.lambdify(x, deriv_expr, "numpy")
 
-        print("Função:", func)
-        print("Derivada:", deriv)
-        print("Início do intervalo:", inicio)
-        print("Fim do intervalo:", fim)
-        print("Tolerância:", tol)
-        print("Número máximo de iterações:", max_iter)
+        self.controller.switch_frame(newton(self.controller, inicio, fim, tol, func_lambda, deriv_lambda, max_iter))

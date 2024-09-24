@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-
-from View.Bissection.bissection import bissection
-from View.FalsaPosicao.fpFormulario import fpFormulario
-from View.formulario import formulario
+from Metodos.FalsaPosicao.fpFormulario import fpFormulario
+from Metodos.Bissection.formulario import formulario
+from Metodos.Newton.newtonFormulario import newtonFormulario
 
 
 class index(tk.Frame):
@@ -26,7 +25,7 @@ class index(tk.Frame):
         btn_falsa_posicao = ttk.Button(self, text="Método da Falsa Posição",
                                       command=lambda: parent.switch_frame(fpFormulario(self.controller)))
         btn_newton = ttk.Button(self, text="Método de Newton-Raphson",
-                               command=lambda: parent.switch_frame(formulario(self.controller)))
+                               command=lambda: parent.switch_frame(newtonFormulario(self.controller)))
         btn_secantes = ttk.Button(self, text="Método das Secantes",
                                  command=lambda: parent.switch_frame(formulario(self.controller)))
 

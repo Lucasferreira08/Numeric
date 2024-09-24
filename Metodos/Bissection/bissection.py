@@ -5,12 +5,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from View.Plotagem.telaPlotagem import telaPlotagem
-
 class bissection(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao):
         super().__init__(parent)
-        from View.Menu.index import index
+        from Menu.index import index
         self.controller = parent
         self.inicio = inicio
         self.fim = fim
@@ -73,11 +71,7 @@ class bissection(tk.Frame):
 
         # Adicionar botões
         btn_voltar = tk.Button(self, text="Voltar ao Menu", command=lambda: self.controller.switch_frame(index(self.controller)))
-        btn_voltar.grid(row=3, column=0, sticky="sw", padx=10, pady=10)
-
-        btn_plotar = tk.Button(self, text="Plotar Função", command=lambda: self.controller.switch_frame(
-                lambda: telaPlotagem(self.controller, funcao, inicio, fim)))
-        btn_plotar.grid(row=3, column=0, sticky="se", padx=10, pady=10)
+        btn_voltar.grid(row=3, column=0, sticky="s", padx=10, pady=10)
 
     def plot_function(self, func_lambda, inicio, fim):
         x_vals = np.linspace(inicio, fim, 400)
