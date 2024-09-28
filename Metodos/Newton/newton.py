@@ -97,9 +97,9 @@ class newton(tk.Frame):
 
             self.iteracoes.append((xn, fxn, self.erro))
 
-            if abs(fxn) < self.erro:
-                return xn
+            if abs(fxn) < self.erro or n>=self.numIteracoes:
+                return
             if dfxn == 0:
-                return None
+                return
             xn = xn - fxn / dfxn
         return None
