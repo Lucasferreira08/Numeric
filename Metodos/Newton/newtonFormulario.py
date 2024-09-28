@@ -3,7 +3,6 @@ from tkinter import ttk
 import sympy as sp
 from Metodos.Newton.newton import newton
 
-
 class newtonFormulario(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)

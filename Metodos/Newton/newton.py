@@ -25,9 +25,6 @@ class newton(tk.Frame):
         self.grid_rowconfigure(2, weight=5)
         self.grid_columnconfigure(0, weight=1)
 
-        # Configurar o frame para não propagar o redimensionamento
-        #self.grid_propagate(False)
-
         # Criar um título para a tela
         title = tk.Label(self, text="Iterações do Método Raphson-Newton", font=("Arial", 16))
         title.grid(row=0, column=0, pady=10, sticky="n")
@@ -39,20 +36,16 @@ class newton(tk.Frame):
         frame_tabela.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
         # Criar uma tabela para mostrar as iterações
-        self.tree = ttk.Treeview(frame_tabela, columns=("Iteração", "a", "b", "f(a)", "f(b)", "Erro"), show="headings")
+        self.tree = ttk.Treeview(frame_tabela, columns=("Iteração", "x", "f(x)", "Erro"), show="headings")
         self.tree.heading("Iteração", text="Iteração")
-        self.tree.heading("a", text="Início")
-        self.tree.heading("b", text="Fim")
-        self.tree.heading("f(a)", text="Média")
-        self.tree.heading("f(b)", text="f(Média)")
+        self.tree.heading("x", text="x")
+        self.tree.heading("f(x)", text="f(x)")
         self.tree.heading("Erro", text="Erro")
 
         # Configurar as colunas para centralização
         self.tree.column("Iteração", width=80, anchor="center")
-        self.tree.column("a", width=80, anchor="center")
-        self.tree.column("b", width=80, anchor="center")
-        self.tree.column("f(a)", width=80, anchor="center")
-        self.tree.column("f(b)", width=80, anchor="center")
+        self.tree.column("x", width=80, anchor="center")
+        self.tree.column("f(x)", width=80, anchor="center")
         self.tree.column("Erro", width=80, anchor="center")
 
         # Barra de rolagem
@@ -68,12 +61,11 @@ class newton(tk.Frame):
         frame_tabela.grid_columnconfigure(0, weight=1)
 
         # Preencher a tabela com as iterações (exemplo de dados)
-        for i, (a, b, fa, fb, erro) in enumerate(self.iteracoes):
-            self.tree.insert("", "end", values=(i + 1, f"{a:.6f}", f"{b:.6f}", f"{fa:.6f}", f"{fb:.6f}", f"{erro:.6f}"))
+        for i, (x, fx, erro) in enumerate(self.iteracoes):
+            self.tree.insert("", "end", values=(i + 1, f"{x:.6f}", f"{fx:.6f}", f"{erro:.6f}"))
 
         # Adicionar botões
-        btn_voltar = tk.Button(self, text="Voltar ao Menu",
-                               command=lambda: self.controller.switch_frame(index(self.controller)))
+        btn_voltar = tk.Button(self, text="Voltar ao Menu", command=lambda: self.controller.switch_frame(index(self.controller)))
         btn_voltar.grid(row=3, column=0, sticky="s", padx=10, pady=10)
 
     def plot_function(self, func_lambda, inicio, fim):
@@ -103,14 +95,11 @@ class newton(tk.Frame):
             fxn = self.funcao(xn)
             dfxn = self.deriv(xn)
 
-            self.iteracoes.append((xn, fxn, dfxn, 0, self.erro))
+            self.iteracoes.append((xn, fxn, self.erro))
 
             if abs(fxn) < self.erro:
-                print(f'Aproximação da raiz encontrada: {xn}')
                 return xn
             if dfxn == 0:
-                print("Derivada zero. Não foi possível continuar.")
                 return None
             xn = xn - fxn / dfxn
-        print("Máximo de iterações atingido. Raiz não encontrada.")
         return None
