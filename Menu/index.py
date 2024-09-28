@@ -3,6 +3,7 @@ from tkinter import ttk
 from Metodos.FalsaPosicao.fpFormulario import fpFormulario
 from Metodos.Bissection.formulario import formulario
 from Metodos.Newton.newtonFormulario import newtonFormulario
+from Metodos.Secantes.secantesFormulario import secantesFormulario
 
 
 class index(tk.Frame):
@@ -27,7 +28,7 @@ class index(tk.Frame):
         btn_newton = ttk.Button(self, text="Método de Newton-Raphson",
                                command=lambda: parent.switch_frame(newtonFormulario(self.controller)))
         btn_secantes = ttk.Button(self, text="Método das Secantes",
-                                 command=lambda: parent.switch_frame(formulario(self.controller)))
+                                 command=lambda: parent.switch_frame(secantesFormulario(self.controller)))
 
         # Posicionamento dos botões usando grid
         btn_bisseccao.grid(row=0, column=1, padx=10, pady=10, sticky="ew")

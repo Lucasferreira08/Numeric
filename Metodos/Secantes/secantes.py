@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-class fp(tk.Frame):
+class secantes(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao, num_iteracoes):
         super().__init__(parent)
         from Menu.index import index
@@ -15,7 +15,7 @@ class fp(tk.Frame):
         self.funcao = funcao
         self.numIteracoes = num_iteracoes
         self.iteracoes = []
-        self.fpFunction()
+        self.secant_method(self.funcao, self.inicio, self.fim, self.erro, self.numIteracoes)
 
         # Configurar o grid para tornar a tela responsiva
         self.grid_rowconfigure(0, weight=1)
@@ -23,11 +23,8 @@ class fp(tk.Frame):
         self.grid_rowconfigure(2, weight=5)
         self.grid_columnconfigure(0, weight=1)
 
-        # Configurar o frame para não propagar o redimensionamento
-        #self.grid_propagate(False)
-
         # Criar um título para a tela
-        title = tk.Label(self, text="Iterações do Método da Bissecção", font=("Arial", 16))
+        title = tk.Label(self, text="Iterações do Método das Secantes", font=("Arial", 16))
         title.grid(row=0, column=0, pady=10, sticky="n")
 
         self.plot_function(funcao, inicio, fim)
@@ -37,20 +34,24 @@ class fp(tk.Frame):
         frame_tabela.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
         # Criar uma tabela para mostrar as iterações
-        self.tree = ttk.Treeview(frame_tabela, columns=("Iteração", "a", "b", "f(a)", "f(b)", "Erro"), show="headings")
+        self.tree = ttk.Treeview(frame_tabela, columns=("Iteração", "x0", "x1", "f(x0)", "f(x1)", "x", "f(x2)", "Erro"), show="headings")
         self.tree.heading("Iteração", text="Iteração")
-        self.tree.heading("a", text="Início")
-        self.tree.heading("b", text="Fim")
-        self.tree.heading("f(a)", text="Média")
-        self.tree.heading("f(b)", text="f(Média)")
+        self.tree.heading("x0", text="x0")
+        self.tree.heading("x1", text="x1")
+        self.tree.heading("f(x0)", text="f(x0)")
+        self.tree.heading("f(x1)", text="f(x1)")
+        self.tree.heading("x", text="x2")
+        self.tree.heading("f(x2)", text="f(x2)")
         self.tree.heading("Erro", text="Erro")
 
         # Configurar as colunas para centralização
         self.tree.column("Iteração", width=80, anchor="center")
-        self.tree.column("a", width=80, anchor="center")
-        self.tree.column("b", width=80, anchor="center")
-        self.tree.column("f(a)", width=80, anchor="center")
-        self.tree.column("f(b)", width=80, anchor="center")
+        self.tree.column("x0", width=80, anchor="center")
+        self.tree.column("x1", width=80, anchor="center")
+        self.tree.column("f(x0)", width=80, anchor="center")
+        self.tree.column("f(x1)", width=80, anchor="center")
+        self.tree.column("x", width=80, anchor="center")
+        self.tree.column("f(x2)", width=80, anchor="center")
         self.tree.column("Erro", width=80, anchor="center")
 
         # Barra de rolagem
@@ -66,12 +67,11 @@ class fp(tk.Frame):
         frame_tabela.grid_columnconfigure(0, weight=1)
 
         # Preencher a tabela com as iterações (exemplo de dados)
-        for i, (a, b, fa, fb, erro) in enumerate(self.iteracoes):
-            self.tree.insert("", "end", values=(i + 1, f"{a:.6f}", f"{b:.6f}", f"{fa:.6f}", f"{fb:.6f}", f"{erro:.6f}"))
+        for i, (x0, x1, f_x0, f_x1, x, f_x2) in enumerate(self.iteracoes):
+            self.tree.insert("", "end", values=(i + 1, f"{x0:.6f}", f"{x1:.6f}", f"{f_x0:.6f}", f"{f_x1:.6f}", f"{x:.6f}", f"{f_x2:.6f}", f"{erro:.6f}"))
 
         # Adicionar botões
-        btn_voltar = tk.Button(self, text="Voltar ao Menu",
-                               command=lambda: self.controller.switch_frame(index(self.controller)))
+        btn_voltar = tk.Button(self, text="Voltar ao Menu", command=lambda: self.controller.switch_frame(index(self.controller)))
         btn_voltar.grid(row=3, column=0, sticky="s", padx=10, pady=10)
 
     def plot_function(self, func_lambda, inicio, fim):
@@ -95,27 +95,27 @@ class fp(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().grid(row=1, column=0, padx=10, pady=10)
 
-    def meio(self, a, b):
+    def secant_method(self, f, x0, x1, tol, max_iter):
+        for i in range(max_iter):
+            # Calcula o valor da função nos pontos x0 e x1
+            f_x0 = f(x0)
+            f_x1 = f(x1)
 
-        m = (self.funcao(b)*a - self.funcao(a)*b)/(self.funcao(b) - self.funcao(a))
+            # Evitar divisão por zero
+            if f_x1 - f_x0 == 0:
+                return
 
-        return m
+            # Fórmula do método das secantes
+            x2 = x1 - f_x1 * (x1 - x0) / (f_x1 - f_x0)
 
-    def fpFunction(self):
-        #if self.funcao(self.inicio) * self.funcao(self.fim) >= 0:
-            #return
+            self.iteracoes.append((x0, x1, f_x0, f_x1, x2, f(x2)))
 
-        i=0
-        while True:
-            m = fp.meio(self, self.inicio, self.fim)
-            i+=1
+            # Verifica a tolerância
+            if abs(x2 - x1) < tol:
+                return
 
-            self.iteracoes.append((self.inicio, self.fim, m, self.funcao(m), self.erro))
+            # Atualiza os pontos
+            x0 = x1
+            x1 = x2
 
-            if abs(self.funcao(m)) <= self.erro or i>=self.numIteracoes:
-                break
-
-            if self.funcao(self.inicio) * self.funcao(m) < 0:
-                self.fim = m
-            else:
-                self.inicio = m
+        return
