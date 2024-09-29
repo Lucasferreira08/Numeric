@@ -7,7 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 class fp(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao, num_iteracoes):
         super().__init__(parent)
-        from Menu.index import index
+        from Menu.menu import index
         self.controller = parent
         self.inicio = inicio
         self.fim = fim
@@ -70,8 +70,7 @@ class fp(tk.Frame):
             self.tree.insert("", "end", values=(i + 1, f"{a:.6f}", f"{b:.6f}", f"{fa:.6f}", f"{fb:.6f}", f"{erro:.6f}"))
 
         # Adicionar botões
-        btn_voltar = tk.Button(self, text="Voltar ao Menu",
-                               command=lambda: self.controller.switch_frame(index(self.controller)))
+        btn_voltar = tk.Button(self, text="Voltar ao Menu", command=lambda: self.controller.switch_frame(index(self.controller)))
         btn_voltar.grid(row=3, column=0, sticky="s", padx=10, pady=10)
 
     def plot_function(self, func_lambda, inicio, fim):

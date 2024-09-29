@@ -8,7 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 class newton(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao, deriv, num_iteracoes):
         super().__init__(parent)
-        from Menu.index import index
+        from Menu.menu import index
         self.controller = parent
         self.inicio = inicio
         self.fim = fim
@@ -98,8 +98,8 @@ class newton(tk.Frame):
             self.iteracoes.append((xn, fxn, self.erro))
 
             if abs(fxn) < self.erro or n>=self.numIteracoes:
-                return
+                return xn
             if dfxn == 0:
-                return
+                return xn
             xn = xn - fxn / dfxn
-        return None
+        return xn

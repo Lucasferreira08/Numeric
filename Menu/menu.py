@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from Metodos.FalsaPosicao.fpFormulario import fpFormulario
 from Metodos.Bissection.formulario import formulario
+from Metodos.MultiplosMetodos.multiplosFormulario import multiplosFormulario
 from Metodos.Newton.newtonFormulario import newtonFormulario
 from Metodos.Secantes.secantesFormulario import secantesFormulario
 
@@ -30,14 +31,18 @@ class index(tk.Frame):
         btn_secantes = ttk.Button(self, text="Método das Secantes",
                                  command=lambda: parent.switch_frame(secantesFormulario(self.controller)))
 
+        btn_multiplos = ttk.Button(self, text="Múltiplos Métodos",
+                                  command=lambda: parent.switch_frame(multiplosFormulario(self.controller)))
+
         # Posicionamento dos botões usando grid
         btn_bisseccao.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
         btn_falsa_posicao.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
         btn_newton.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
         btn_secantes.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+        btn_multiplos.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
 
         # Centraliza o frame dentro da janela
-        for i in range(4):
+        for i in range(5):
             self.grid_rowconfigure(i, weight=1)  # Permite que as linhas cresçam
         self.grid_columnconfigure(0, weight=1)  # Espaçamento antes do menu
-        self.grid_columnconfigure(2, weight=1)
+        self.grid_columnconfigure(1, weight=1)

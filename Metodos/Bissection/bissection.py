@@ -8,7 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 class bissection(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao):
         super().__init__(parent)
-        from Menu.index import index
+        from Menu.menu import index
         self.controller = parent
         self.inicio = inicio
         self.fim = fim

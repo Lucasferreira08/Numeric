@@ -1,5 +1,5 @@
 import tkinter as tk
-from Menu.index import index
+from Menu.menu import index
 
 class appManager(tk.Tk):
     def __init__(self):
