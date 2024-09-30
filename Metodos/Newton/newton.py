@@ -4,6 +4,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from Metodos.metodosFuncoes import metodosFuncoes
+
 
 class newton(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao, deriv, num_iteracoes):
@@ -16,8 +18,7 @@ class newton(tk.Frame):
         self.funcao = funcao
         self.deriv = deriv
         self.numIteracoes = num_iteracoes
-        self.iteracoes = []
-        self.newtonFunction()
+        self.iteracoes = metodosFuncoes.newtonFunction(funcao, deriv, inicio, fim, erro, num_iteracoes)
 
         # Configurar o grid para tornar a tela responsiva
         self.grid_rowconfigure(0, weight=1)

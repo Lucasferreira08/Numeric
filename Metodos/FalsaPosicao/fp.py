@@ -4,6 +4,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from Metodos.metodosFuncoes import metodosFuncoes
+
+
 class fp(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao, num_iteracoes):
         super().__init__(parent)
@@ -14,17 +17,13 @@ class fp(tk.Frame):
         self.erro = erro
         self.funcao = funcao
         self.numIteracoes = num_iteracoes
-        self.iteracoes = []
-        self.fpFunction()
+        self.iteracoes, a, b = metodosFuncoes.fpFunction(funcao, inicio, fim, erro, num_iteracoes)
 
         # Configurar o grid para tornar a tela responsiva
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=5)
         self.grid_rowconfigure(2, weight=5)
         self.grid_columnconfigure(0, weight=1)
-
-        # Configurar o frame para não propagar o redimensionamento
-        #self.grid_propagate(False)
 
         # Criar um título para a tela
         title = tk.Label(self, text="Iterações do Método da Bissecção", font=("Arial", 16))
@@ -93,28 +92,3 @@ class fp(tk.Frame):
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas.draw()
         canvas.get_tk_widget().grid(row=1, column=0, padx=10, pady=10)
-
-    def meio(self, a, b):
-
-        m = (self.funcao(b)*a - self.funcao(a)*b)/(self.funcao(b) - self.funcao(a))
-
-        return m
-
-    def fpFunction(self):
-        #if self.funcao(self.inicio) * self.funcao(self.fim) >= 0:
-            #return
-
-        i=0
-        while True:
-            m = fp.meio(self, self.inicio, self.fim)
-            i+=1
-
-            self.iteracoes.append((self.inicio, self.fim, m, self.funcao(m), self.erro))
-
-            if abs(self.funcao(m)) <= self.erro or i>=self.numIteracoes:
-                break
-
-            if self.funcao(self.inicio) * self.funcao(m) < 0:
-                self.fim = m
-            else:
-                self.inicio = m

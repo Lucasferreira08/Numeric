@@ -5,8 +5,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from Metodos.metodosFuncoes import metodosFuncoes
+
+
 class bissection(tk.Frame):
-    def __init__(self, parent, inicio, fim, erro, funcao):
+    def __init__(self, parent, inicio, fim, erro, funcao, num_iteracoes):
         super().__init__(parent)
         from Menu.menu import index
         self.controller = parent
@@ -14,17 +17,14 @@ class bissection(tk.Frame):
         self.fim = fim
         self.erro = erro
         self.funcao = funcao
-        self.iteracoes = []
-        self.bissectionFunction()
+        self.num_iteracoes = num_iteracoes
+        self.iteracoes, a, b = metodosFuncoes.bissectionFunction(funcao, inicio, fim, erro, num_iteracoes)
 
         # Configurar o grid para tornar a tela responsiva
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=5)
         self.grid_rowconfigure(2, weight=5)
         self.grid_columnconfigure(0, weight=1)
-
-        # Configurar o frame para não propagar o redimensionamento
-        self.grid_propagate(False)
 
         # Criar um título para a tela
         title = tk.Label(self, text="Iterações do Método da Bissecção", font=("Arial", 16))
@@ -93,34 +93,3 @@ class bissection(tk.Frame):
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas.draw()
         canvas.get_tk_widget().grid(row=1, column=0, padx=10, pady=10)
-
-    @staticmethod
-    def meio(a, b):
-        m = (b + a) / 2
-        return m
-
-    def bissectionFunction(self):
-        if self.funcao(self.inicio) * self.funcao(self.fim) >= 0:
-            print("Não é certo a existência de raiz")
-            exit()
-
-        if abs(self.funcao(self.inicio)) <= self.erro:
-            print(f"Raiz {self.inicio} - {self.funcao(self.inicio)}")
-
-        if abs(self.funcao(self.fim)) <= self.erro:
-            print(f"Raiz {self.fim} - {self.funcao(self.fim)}")
-        i = 0
-        while True:
-            m = bissection.meio(self.inicio, self.fim)
-
-            self.iteracoes.append((self.inicio, self.fim, m, self.funcao(m), self.erro))
-            
-            i += 1
-            if abs(self.funcao(m)) <= self.erro:
-                print(f"Raiz {m} - {self.funcao(m)}")
-                break
-
-            if self.funcao(self.inicio) * self.funcao(m) < 0:
-                self.fim = m
-            else:
-                self.inicio = m

@@ -3,6 +3,7 @@ import tkinter as tk
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from Metodos.metodosFuncoes import metodosFuncoes
 
 class secantes(tk.Frame):
     def __init__(self, parent, inicio, fim, erro, funcao, num_iteracoes):
@@ -14,8 +15,7 @@ class secantes(tk.Frame):
         self.erro = erro
         self.funcao = funcao
         self.numIteracoes = num_iteracoes
-        self.iteracoes = []
-        self.secant_method(self.funcao, self.inicio, self.fim, self.erro, self.numIteracoes)
+        self.iteracoes, a, b = metodosFuncoes.secant_method(funcao, inicio, fim, erro, num_iteracoes)
 
         # Configurar o grid para tornar a tela responsiva
         self.grid_rowconfigure(0, weight=1)
@@ -94,28 +94,3 @@ class secantes(tk.Frame):
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas.draw()
         canvas.get_tk_widget().grid(row=1, column=0, padx=10, pady=10)
-
-    def secant_method(self, f, x0, x1, tol, max_iter):
-        for i in range(max_iter):
-            # Calcula o valor da função nos pontos x0 e x1
-            f_x0 = f(x0)
-            f_x1 = f(x1)
-
-            # Evitar divisão por zero
-            if f_x1 - f_x0 == 0:
-                return
-
-            # Fórmula do método das secantes
-            x2 = x1 - f_x1 * (x1 - x0) / (f_x1 - f_x0)
-
-            self.iteracoes.append((x0, x1, f_x0, f_x1, x2, f(x2)))
-
-            # Verifica a tolerância
-            if abs(x2 - x1) < tol:
-                return
-
-            # Atualiza os pontos
-            x0 = x1
-            x1 = x2
-
-        return
